@@ -44,7 +44,7 @@
 #include "t-common.h"
 
 #ifdef _WIN32
-# define THREAD_RET_TYPE  DWORD WINAPI
+# define THREAD_RET_TYPE  DWORD
 # define THREAD_RET_VALUE 0
 #else
 # define THREAD_RET_TYPE  void *

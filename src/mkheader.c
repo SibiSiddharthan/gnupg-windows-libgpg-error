@@ -602,7 +602,7 @@ write_special (const char *fname, int lnr, const char *tag)
     }
   else if (!strcmp (tag, "include:os-add"))
     {
-      if (!strcmp (host_os, "mingw32"))
+      if (!strcmp (host_os, "mingw32") || (have_w32_system || have_w64_system))
         {
           include_file (fname, lnr, "w32-add.h", write_line);
         }

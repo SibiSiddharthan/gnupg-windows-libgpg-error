@@ -2199,19 +2199,6 @@ create_stream (estream_t *r_stream, void *cookie, es_syshd_t *syshd,
   stream_new = NULL;
   stream_internal_new = NULL;
 
-#if HAVE_W32_SYSTEM
-  if ((xmode & X_POLLABLE) && kind != BACKEND_W32)
-    {
-      /* We require the W32 backend, because only that allows us to
-       * write directly using the native W32 API and to disable the
-       * system clamp.  Note that func_w32_create has already been
-       * called with the flag to disable the system call clamp.  */
-      _set_errno (EINVAL);
-      err = -1;
-      goto out;
-    }
-#endif /*HAVE_W32_SYSTEM*/
-
   stream_new = mem_alloc (sizeof (*stream_new));
   if (! stream_new)
     {

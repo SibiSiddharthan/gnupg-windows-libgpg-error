@@ -68,7 +68,14 @@ mygethome (void)
       char *home = getenv("HOME");
 
       if(home)
+      {
+#ifdef HAVE_W32_SYSTEM
+        for (char *p=home; *p; p++)
+          if (*p == '\\')
+            *p = '/';
+#endif
         home_buffer = xstrdup (home);
+      }
 #if defined(HAVE_GETPWUID) && defined(HAVE_PWD_H)
       else
         {

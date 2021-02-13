@@ -33,9 +33,10 @@ int _gpg_w32_gettext_use_utf8 (int value);
 # define dgettext(a,b)       _gpg_w32_dgettext ((a), (b))
 # define ngettext(a,b,c)     _gpg_w32_dngettext (NULL, (a), (b), (c))
 # define dngettext(a,b,c,d)  _gpg_w32_dngettext ((a), (b), (c), (d))
+#endif /*GPG_ERR_ENABLE_GETTEXT_MACROS*/
+// Using full libintl on Windows, just enable these defines
 # define gettext_localename() _gpg_w32_gettext_localename ()
 # define gettext_use_utf8(a) _gpg_w32_gettext_use_utf8 (a)
-#endif /*GPG_ERR_ENABLE_GETTEXT_MACROS*/
 
 /* Force the use of the locale NAME or if NAME is NULL the one derived
  * from LANGID.  This function must be used early and is not thread-safe. */
@@ -65,3 +66,8 @@ size_t  gpgrt_w32_iconv (gpgrt_w32_iconv_t cd,
 char *gpgrt_w32_reg_query_string (const char *root,
                                   const char *dir,
                                   const char *name);
+
+#ifdef _WIN32
+# define GPGRT_HAVE_MACRO_FUNCTION 1
+# define GPGRT_HAVE_PRAGMA_GCC_PUSH 1
+#endif

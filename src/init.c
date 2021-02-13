@@ -700,7 +700,7 @@ DllMain (HINSTANCE hinst, DWORD reason, LPVOID reserved)
       tls_index = TlsAlloc ();
       if (tls_index == TLS_OUT_OF_INDEXES)
         return FALSE;
-#ifndef _GPG_ERR_HAVE_CONSTRUCTOR
+#if !defined(DLL_EXPORT) || !defined(_GPG_ERR_HAVE_CONSTRUCTOR)
       /* If we have not constructors (e.g. MSC) we call it here.  */
       _gpg_w32__init_gettext_module ();
 #endif
