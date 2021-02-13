@@ -222,11 +222,10 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lock-obj-pub.native.h
 			DEPENDS gen-lock)
 endif()
 
-add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/gpg-error.h ${CMAKE_BINARY_DIR}/gpgrt.h ${CMAKE_CURRENT_SOURCE_DIR}/src/gpgrt.h
+add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/gpg-error.h ${CMAKE_BINARY_DIR}/gpgrt.h
 			COMMAND mkheader-gpgrt ${HOST_TRIPLET_STRING} ${CMAKE_CURRENT_SOURCE_DIR}/src/gpg-error.h.in
 			${CMAKE_CURRENT_BINARY_DIR}/config.h ${PROJECT_VERSION} ${VERSION_HEX} > ${CMAKE_BINARY_DIR}/gpg-error.h
 			COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/gpg-error.h ${CMAKE_BINARY_DIR}/gpgrt.h
-			COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/gpg-error.h ${CMAKE_CURRENT_SOURCE_DIR}/src/gpgrt.h
 			DEPENDS mkheader-gpgrt
 			${CMAKE_CURRENT_SOURCE_DIR}/src/gpg-error.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h ${CMAKE_CURRENT_BINARY_DIR}/lock-obj-pub.native.h
 			${CMAKE_CURRENT_SOURCE_DIR}/src/err-sources.h.in ${CMAKE_CURRENT_SOURCE_DIR}/src/err-codes.h.in	${CMAKE_CURRENT_SOURCE_DIR}/src/errnos.in
@@ -255,7 +254,7 @@ ${CMAKE_CURRENT_BINARY_DIR}/err-sources.h ${CMAKE_CURRENT_BINARY_DIR}/err-codes.
 ${CMAKE_CURRENT_BINARY_DIR}/err-sources-sym.h ${CMAKE_CURRENT_BINARY_DIR}/err-codes-sym.h
 ${CMAKE_CURRENT_BINARY_DIR}/errnos-sym.h ${CMAKE_CURRENT_BINARY_DIR}/code-from-errno.h
 ${CMAKE_CURRENT_BINARY_DIR}/lock-obj-pub.native.h
-${CMAKE_BINARY_DIR}/gpg-error.h ${CMAKE_BINARY_DIR}/gpgrt.h ${CMAKE_CURRENT_SOURCE_DIR}/src/gpgrt.h)
+${CMAKE_BINARY_DIR}/gpg-error.h ${CMAKE_BINARY_DIR}/gpgrt.h)
 
 set(gpgrt_SOURCES
 gettext.h protos.h gpgrt-int.h init.c init.h version.c lock.h thread.h

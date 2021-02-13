@@ -19,7 +19,7 @@
 
 #include <stdarg.h>
 
-#include "../src/gpgrt.h"
+#include "gpgrt.h"
 
 #ifndef PGM
 # error Macro PGM not defined.
