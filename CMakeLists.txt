@@ -8,7 +8,7 @@
 
 cmake_minimum_required(VERSION 3.12)
 project(libgpg-error
-		VERSION 1.41
+		VERSION 1.41.0
 		LANGUAGES C)
 
 add_compile_definitions(HAVE_CONFIG_H
@@ -27,15 +27,15 @@ set(PACKAGE_TARNAME \"${PROJECT_NAME}\")
 set(PACKAGE_URL \"\")
 set(PACKAGE_VERSION \"${PROJECT_VERSION}\")
 set(VERSION \"${PROJECT_VERSION}\")
-set(VERSION_HEX 0x012900) #0x%02x%02x00 -> 0x'major''minor'00
+math(EXPR VERSION_HEX "(${PROJECT_VERSION_MAJOR} << 16) + (${PROJECT_VERSION_MINOR} << 8) + ${PROJECT_VERSION_PATCH}" OUTPUT_FORMAT HEXADECIMAL)
 
 include(UtilityFunctions)
-include(CheckCSourceCompiles)
 include(CheckLibraryExists)
-include(visibility)
+
 include(LargeFiles)
-include(fork)
 include(TimeWithSysTime)
+include(fork)
+include(visibility)
 
 find_package(Iconv)
 find_package(Intl)
@@ -86,7 +86,7 @@ check_functions(flockfile fork getpwnam getpwnam_r getpwuid getpwuid_r
 getrlimit memrchr mmap rand setenv stat stpcpy
 strerror_r strlwr vasprintf vfork)
 
-check_functions_declarations(strerror_r)
+check_function_declarations(strerror_r)
 
 check_library_exists(readline rl_completion_matches "" HAVE_LIBREADLINE)
 
@@ -115,43 +115,47 @@ if(HAVE_PTHREAD_RWLOCK_T)
 	set(HAVE_PTHREAD_RWLOCK 1)
 endif()
 
-check_c_source_compiles("
+check_compile("Checking whether the GCC style aligned attribute is supported" "yes" "no" "
 struct { int a; } foo __attribute__ ((aligned (16)));
 int main(){return 0;}"
 HAVE_GCC_ATTRIBUTE_ALIGNED)
 
-check_c_source_compiles("
-#include <langinfo.h>
-int
-main ()
-{
-char* cs = nl_langinfo(THOUSEP); return !cs;
-  return 0;
-}"
-HAVE_LANGINFO_THOUSEP)
+if(HAVE_LANGINFO_H)
+	check_compile("Checking whether langinfo.h contains THOUSEP" "yes" "no" "
+	#include <langinfo.h>
+	int
+	main ()
+	{
+		char* cs = nl_langinfo(THOUSEP);
+		return !cs;
+	}"
+	HAVE_LANGINFO_THOUSEP)
+endif()
 
-check_c_source_compiles("
-#include <pthread.h>
-int
-main ()
-{
-	int x = (int)PTHREAD_MUTEX_RECURSIVE;
-	return !x;
-}"
-HAVE_PTHREAD_MUTEX_RECURSIVE)
+if(HAVE_PTHREAD_H)
+	check_compile("Checking for PTHREAD_MUTEX_RECURSIVE in pthread.h" "found" "not found" "
+	#include <pthread.h>
+	int main ()
+	{
+		int x = (int)PTHREAD_MUTEX_RECURSIVE;
+		return !x;
+	}"
+	HAVE_PTHREAD_MUTEX_RECURSIVE)
+endif()
 
-check_c_source_runs("
-#include <string.h>
-#include <ctype.h>
-extern char *strerror_r ();
-int
-main ()
-{
-	char buf[100];
-	char x = *strerror_r (0, buf, sizeof buf);
-	return ! isalpha (x);
-}"
-STRERROR_R_CHAR_P)
+if(HAVE_STRERROR_R OR HAVE_DECL_STRERROR_R)
+	check_run("Checking whether strerror_r returns char *" "yes" "no" "
+	#include <string.h>
+	#include <ctype.h>
+	extern char *strerror_r ();
+	int main ()
+	{
+		char buf[100];
+		char x = *strerror_r (0, buf, sizeof buf);
+		return ! isalpha (x);
+	}"
+	STRERROR_R_CHAR_P)
+endif()
 
 configure_file(libgpg-error-config.h.in config.h)
 if(WIN32)
